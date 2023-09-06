@@ -1,0 +1,9 @@
+[submodule "micro-logger"]
+	path = micro-logger
+	url = https://github.com/str0g/micro-logger
+[submodule "dependecies"]
+	path = dependecies
+	url = https://github.com/str0g/micro-logger
+[submodule "dependecies/micro-logger"]
+	path = dependecies/micro-logger
+	url = https://github.com/str0g/micro-logger
