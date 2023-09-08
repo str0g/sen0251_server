@@ -17,6 +17,7 @@ Server& Server::getInstance() {
 Server::Server() {
   try {
     std::filesystem::create_directory(path);
+    listener_resources_init();
   } catch (const std::filesystem::filesystem_error& e) {
     MSG_INFO("%s", e.what());
     return;

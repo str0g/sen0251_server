@@ -9,6 +9,11 @@
 #include <sys/un.h>
 #include <unistd.h>
 #include <string.h>
+#
+
+constexpr const char* I2C_DEV_ID = "I2C_DEV_ID";
+
+void listener_resources_init();
 
 class Listner {
   public:
