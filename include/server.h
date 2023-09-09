@@ -18,6 +18,7 @@ class Server {
 
     std::vector<Listner*> listeners;
     std::string path = "/tmp/sen0251";
+    std::string lock_file = path + "/.lock";
 };
 
 #endif // !__SERVER_H__

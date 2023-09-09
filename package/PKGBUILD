@@ -1,0 +1,36 @@
+# Maintainer: Łukasz Buśko <lukasz.busko@guns4hire.cc>
+
+pkgname=sen0251_server
+pkgver=0.1
+pkgrel=1
+arch=('any')
+
+depends=()
+makedepends=('git' 'cmake' 'ninja' 'pkgconf' 'micro_logger++' 'dfrobot-sen0251')
+
+source=(
+  "git+https://github.com/str0g/sen0251_server.git"
+)
+sha256sums=(
+  'SKIP'
+)
+
+pkgdesc="Server for i2c driver."
+license=('MPL')
+
+build() {
+  cd sen0251_server
+  cmake . -GNinja -DCMAKE_BUILD_TYPE=Release
+  ninja
+}
+
+package() {
+  cd sen0251_server
+  install -dm755 "$pkgdir/usr/bin/"
+  install -Dm755 "sen0251-server" "$pkgdir/usr/bin/"
+  install -dm755 "$pkgdir/usr/lib/systemd/system"
+  install -Dm644 "package/sen0251_service@.service" "$pkgdir/usr/lib/systemd/system"
+  echo "ls /dev/i2c"
+  echo "Manually enable service with systemctl enable sen0251_service@[dev].service"
+  echo "if updating/reinstalling pleas run systemctl daemon-reload"
+}

@@ -51,6 +51,16 @@ void Listner::runner() {
     MSG_ERROR("%s", strerror(errno));
     return;
   }
+  try {
+    std::filesystem::permissions(path,
+                                 std::filesystem::perms::owner_all |
+                                     std::filesystem::perms::group_read | std::filesystem::perms::group_write |
+                                     std::filesystem::perms::others_read | std::filesystem::perms::others_write);
+  } catch (const std::filesystem::filesystem_error& e) {
+    MSG_ERROR("%s", e.what());
+    return;
+  }
+
   rc = listen(sock, 10);
   if (rc == -1) {
     MSG_ERROR("%s", strerror(errno));

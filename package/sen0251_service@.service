@@ -1,0 +1,19 @@
+[Unit]
+Description="sen0251 server service"
+
+[Service]
+Environment=I2C_DEV_ID=%I
+ExecStart=/usr/bin/sen0251-server
+Restart=always
+RestartSec=0
+Group=i2c
+User=nobody
+ProtectSystem=full
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=true
+
+[Install]
+WantedBy=multi-user.target

@@ -6,6 +6,10 @@ option(USE_SUBMODULE "Use dependencies from submodule" OFF)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Debug")
+endif()
+
 if (${CMAKE_BUILD_TYPE} EQUAL "Debug")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
 else ()
@@ -31,7 +35,6 @@ include_directories(include)
 aux_source_directory(src SRC)
 
 add_executable(${PROJECT_NAME} ${SRC})
-set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-li2c")
 target_link_libraries(${PROJECT_NAME} LINK_PUBLIC micro_logger++)
-target_link_libraries(${PROJECT_NAME} LINK_PUBLIC dfrobot-sen0251)
+target_link_libraries(${PROJECT_NAME} LINK_PUBLIC dfrobot-sen0251 "-li2c")
 
