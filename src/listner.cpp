@@ -13,7 +13,6 @@ Listner::Listner(const std::string& path, const std::string& file): path(path+"/
 }
 
 Listner::~Listner() {
-  MSG_INFO("finishing %s %b", path.c_str(), is_stopped());
   if(th.joinable())
     th.join();
   if(sock != -1)
@@ -23,6 +22,20 @@ Listner::~Listner() {
 
 void Listner::stop() {
   is_running = false;
+  auto s = socket(AF_UNIX, SOCK_SEQPACKET, 0);
+  if (s == -1) {
+    MSG_ERROR("%s", strerror(errno));
+    return;
+  }
+  struct sockaddr_un n = {};
+  n.sun_family = AF_UNIX;
+  strncpy(n.sun_path, path.c_str(), path.size());
+  int rc = connect(s, (struct sockaddr*)&n, sizeof(n));
+  if(rc == -1) {
+    MSG_ERROR("%s", strerror(errno));
+    return;
+  }
+  close(s);
 }
 
 bool Listner::is_stopped() const {
@@ -68,10 +81,11 @@ void Listner::runner() {
   }
 
   while(is_running) {
+    MSG_DEBUG("waiting for client");
     int connection = accept(sock, NULL, NULL);
     write(connection, buf, this->get_reading());
     close(connection);
   }
-  is_running = false;
+  MSG_DEBUG("runner has ended");
 }
 

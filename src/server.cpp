@@ -1,6 +1,7 @@
 #include <filesystem>
 #include <exception>
 #include <chrono>
+#include <csignal>
 
 #include "micro_logger.hpp"
 
@@ -39,6 +40,12 @@ Server::Server() {
   MSG_INFO("service is on-line");
   std::ofstream fs(lock_file);
   std::filesystem::permissions(lock_file, std::filesystem::perms::owner_write);
+
+  std::signal(SIGINT, [](int) {
+    for (auto obj:getInstance().listeners) {
+      obj->stop();
+    }
+  });
 }
 
 void Server::wait() {
@@ -56,16 +63,12 @@ void Server::wait() {
 }
 
 Server::~Server() {
-  MSG_INFO("shutdown");
+  std::filesystem::remove(getInstance().lock_file);
+
   for(auto obj:listeners) {
     delete obj;
   }
 
   auto removed = std::filesystem::remove_all(path);
-  if(removed > 1) {
-    MSG_INFO("removed %ld", removed);
-  }
-
-  std::filesystem::remove(lock_file);
 }
 
